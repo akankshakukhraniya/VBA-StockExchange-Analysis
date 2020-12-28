@@ -1,0 +1,98 @@
+Sub Multiple_year_stock_data()
+
+For Each ws In Worksheets
+
+LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+  
+ws.Cells(1, 9).Value = "Ticker"
+ws.Cells(1, 10).Value = "Yearly Change"
+ws.Cells(1, 11).Value = "Percentage Change"
+ws.Cells(1, 12).Value = "Total Stock Volume"
+
+
+
+'temp for Ticker, total stock volume for total_Vol
+'and k will print Ticker value in column I.
+'j works as holder for year_open
+
+Dim temp As String
+Dim total_Vol As Double
+k = 2
+temp = Cells(2, 1).Value
+Dim year_open As Double
+Dim year_close As Double
+Dim Yearly_Change As Double
+Dim Percentage_Change As Double
+j = 2
+
+
+    For i = 2 To LastRow
+        'if cells(i+1 , 1) = temp then add cells(i, 7) to total_Vol
+           
+           If ws.Cells(i + 1, 1) = temp Then
+           total_Vol = ws.Cells(i, 7).Value + (total_Vol)
+
+                
+        'Else print temp in Cells(k, 9) and total stock volume in Cells(k, 12)
+           
+           Else
+           
+           ws.Cells(k, 9).Value = temp
+           total_Vol = ws.Cells(i, 7).Value + (total_Vol)
+           ws.Cells(k, 12).Value = total_Vol
+           
+	'We have to calculate year_close - year_open
+        'Where year_close is the last row of ticker and
+        'year_open is the first row of the ticker
+
+
+           year_open = ws.Cells(j, 3)
+           year_close = ws.Cells(i, 6)
+           
+           Yearly_Change = year_close - year_open
+           
+	  'If year_open value is zero then check.
+
+                    If year_open = 0 Then
+                       Percentage_Change = 0
+                
+                        'MsgBox ws.name
+                        'MsgBox i
+                    Else
+                        Percentage_Change = (Yearly_Change / year_open)
+            
+                    End If
+            
+            
+           'If Yearly_Change > 0 the Green else Red
+            
+            If Yearly_Change > 0 Then
+                
+                ws.Cells(k, 10).Interior.ColorIndex = 4
+                
+            Else
+                ws.Cells(k, 10).Interior.ColorIndex = 3
+                
+            End If
+            
+            ws.Cells(k, 10).Value = Yearly_Change
+            
+            ws.Cells(k, 11).NumberFormat = "0.00%"
+            ws.Cells(k, 11).Value = Percentage_Change
+            
+            j = i + 1
+                     
+            k = k + 1
+            temp = ws.Cells(i + 1, 1).Value
+            total_Vol = 0
+            
+
+        
+           
+           End If
+                    
+    Next i
+  
+ Next ws
+ 
+End Sub
